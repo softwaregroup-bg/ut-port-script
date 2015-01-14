@@ -9,21 +9,19 @@
         this.config = {
             id: null,
             logLevel: '',
-            type: 'script',
-            host: '127.0.0.1',
-            port: null,
-            listen: false
+            type: 'script'
         };
     }
 
     util.inherits(ScriptPort, Port);
 
-    ScriptPort.prototype.init = function init() {
-        Port.prototype.init.apply(this, arguments);
+    ScriptPort.prototype.exec = function(msg, callback) {
+        callback(null, msg);
     };
 
-    ScriptPort.prototype.receive = function(msg) {
-        this.level.debug && this.log.debug(msg);
+    ScriptPort.prototype.start = function() {
+        Port.prototype.start.apply(this, arguments);
+        this.pipeExec(this.exec, 10);
     };
 
     return ScriptPort;
