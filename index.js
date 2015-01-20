@@ -15,6 +15,12 @@
 
     util.inherits(ScriptPort, Port);
 
+    // skip creating unnecessary decoding stream, as same message is looped back by exec
+    ScriptPort.prototype.decode = function decode() {
+        return null;
+    };
+
+    //loop back the converted message
     ScriptPort.prototype.exec = function(msg, callback) {
         callback(null, msg);
     };
