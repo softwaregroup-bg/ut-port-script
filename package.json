@@ -1,7 +1,4 @@
 {
-  "name": "ut-script",
-  "version": "5.0.0",
-  "dependencies": {
-    "ut-bus": "~5.0.0"
-  }
+  "name": "ut-port-script",
+  "version": "5.0.0"
 }
