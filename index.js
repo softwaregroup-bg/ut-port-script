@@ -3,6 +3,7 @@
 
     var Port = require('ut-bus/port');
     var util = require('util');
+    var when = require('when');
 
     function ScriptPort() {
         Port.call(this);
@@ -22,11 +23,29 @@
 
     //loop back the converted message
     ScriptPort.prototype.exec = function(msg, callback) {
-        callback(null, msg);
+        var methodName = (msg && msg.$$ && msg.$$.opcode);
+        var fallBack = (methodName && !(this.config[methodName] instanceof Function)) ? 'exec' : methodName
+        if (fallBack && this.config[fallBack] instanceof Function) {
+            when(this.config[fallBack].apply(this, [msg]))
+                .then(function(res){
+                    callback(null,res)
+                })
+                .catch(function(err){
+                    callback(err)
+                })
+        } else {
+            msg || (msg = {});
+            msg.$$ || (msg.$$ = {});
+            msg.$$.mtid = 'error';
+            msg.$$.errorCode = '2002';
+            msg.$$.errorMessage = 'Unknown method ' + methodName;
+            callback(msg);
+        }
     };
 
     ScriptPort.prototype.start = function() {
         Port.prototype.start.apply(this, arguments);
+        this.bus.importMethods(this.config, this.config.imports);
         this.pipeExec(this.exec, 10);
     };
 
