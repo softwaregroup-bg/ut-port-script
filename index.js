@@ -24,12 +24,10 @@
     //loop back the converted message
     ScriptPort.prototype.exec = function(msg, callback) {
         var methodName = (msg && msg.$$ && msg.$$.opcode);
-        var newMsg  = msg.params || msg;
-        newMsg.$$ = msg.$$ ? {authentication: msg.$$.authentication, opcode: msg.$$.opcode, destination: msg.$$.destination, mtid: msg.$$.mtid} : {};
 
         var fallBack = (methodName && !(this.config[methodName] instanceof Function)) ? 'exec' : methodName
         if (fallBack && this.config[fallBack] instanceof Function) {
-            when(when.lift(this.config[fallBack]).apply(this, [newMsg]))
+            when(when.lift(this.config[fallBack]).apply(this, [msg]))
                 .then(function(res){
 
                     callback(null,res);
