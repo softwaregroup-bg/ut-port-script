@@ -48,7 +48,7 @@
 
     ScriptPort.prototype.start = function() {
         Port.prototype.start.apply(this, arguments);
-        this.bus.importMethods(this.config, this.config.imports);
+        this.bus.importMethods(this.config, this.config.imports, {request: true, response: true}, this);
         this.pipeExec(this.exec, 10);
     };
 
