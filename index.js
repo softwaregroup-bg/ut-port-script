@@ -27,13 +27,13 @@
 
         var fallBack = (methodName && !(this.config[methodName] instanceof Function)) ? 'exec' : methodName
         if (fallBack && this.config[fallBack] instanceof Function) {
-            when(when.lift(this.config[fallBack]).apply(this, [msg]))
+            when.lift(this.config[fallBack]).apply(this, [msg])
                 .then(function(res){
 
                     callback(null,res);
                 },function(err){
 
-                    callback(err)
+                    callback(err);
                 });
 
         } else {
