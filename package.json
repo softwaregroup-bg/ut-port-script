@@ -2,7 +2,8 @@
   "name": "ut-port-script",
   "version": "5.0.0",
   "dependencies": {
-    "ut-bus": "~5.0.0"
+    "ut-bus": "~5.0.0",
+    "when": "~3.7.2"
   },
   "publishConfig": {
     "registry": "http://npm.softwaregroup-bg.com:5001"
