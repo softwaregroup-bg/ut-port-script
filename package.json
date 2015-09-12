@@ -1,7 +1,10 @@
 {
   "name": "ut-port-script",
   "version": "5.2.0",
-  "peerDependencies":{
+  "dependencies": {
+    "when": "~3.7.2"
+  },
+  "peerDependencies": {
     "ut-bus": "~5.2.0"
   },
   "publishConfig": {
