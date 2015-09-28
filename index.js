@@ -46,6 +46,10 @@ ScriptPort.prototype.start = function() {
     this.bus.importMethods(this.config, this.config.imports, {request: true, response: true}, this);
     Port.prototype.start.apply(this, arguments);
     this.pipeExec(this.exec, 10);
+    this.config.imports && this.config.imports.forEach(function(moduleName){
+        var fn = this.config[moduleName+'.start'];
+        fn && fn();
+    }.bind(this))
 };
 
 module.exports = ScriptPort;
