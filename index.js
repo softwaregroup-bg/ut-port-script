@@ -20,6 +20,7 @@ ScriptPort.prototype.decode = function decode() {
 
 //loop back the converted message
 ScriptPort.prototype.exec = function(msg, callback) {
+    var self = this;
     var methodName = (msg && msg.$$ && msg.$$.opcode);
     var fallBack = (methodName && !(this.config[methodName] instanceof Function)) ? 'exec' : methodName
     if (fallBack && this.config[fallBack] instanceof Function) {
@@ -28,7 +29,7 @@ ScriptPort.prototype.exec = function(msg, callback) {
 
                 callback(null,res);
             },function(err){
-
+                self.log && self.log.error && self.log.error(err);
                 callback(err);
             });
 
