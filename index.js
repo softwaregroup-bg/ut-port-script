@@ -1,6 +1,7 @@
 var Port = require('ut-bus/port');
 var util = require('util');
 var when = require('when');
+var errors = require('./errors.js');
 
 function ScriptPort() {
     Port.call(this);
@@ -19,37 +20,25 @@ ScriptPort.prototype.decode = function decode() {
 };
 
 //loop back the converted message
-ScriptPort.prototype.exec = function(msg, callback) {
-    var methodName = (msg && msg.$$ && msg.$$.opcode);
-    var fallBack = (methodName && !(this.config[methodName] instanceof Function)) ? 'exec' : methodName
-    if (fallBack && this.config[fallBack] instanceof Function) {
-        when.lift(this.config[fallBack]).apply(this, [msg])
-            .then(function(res){
-
-                callback(null,res);
-            },function(err){
-
-                callback(err);
-            });
-
+ScriptPort.prototype.exec = function() {
+    var $meta = (arguments.length > 1 && arguments[arguments.length - 1]);
+    var methodName = ($meta && $meta.opcode) || 'exec';
+    var method =  this.config[methodName] || this.config.exec;
+    if (method instanceof Function) {
+        return when.lift(method).apply(this, Array.prototype.slice.call(arguments));
     } else {
-        msg || (msg = {});
-        msg.$$ || (msg.$$ = {});
-        msg.$$.mtid = 'error';
-        msg.$$.errorCode = '2002';
-        msg.$$.errorMessage = 'Unknown method ' + methodName;
-        callback(msg);
+        return when.reject(errors.script(methodName));
     }
 };
 
 ScriptPort.prototype.start = function() {
     this.bus.importMethods(this.config, this.config.imports, {request: true, response: true}, this);
-    Port.prototype.start.apply(this, arguments);
-    this.pipeExec(this.exec, 10);
-    this.config.imports && this.config.imports.forEach(function(moduleName){
-        var fn = this.config[moduleName+'.start'];
+    Port.prototype.start.apply(this, Array.prototype.slice.call(arguments));
+    this.pipeExec(this.exec.bind(this), this.config.concurrency);
+    this.config.imports && this.config.imports.forEach(function(moduleName) {
+        var fn = this.config[moduleName + '.start'];
         fn && fn();
-    }.bind(this))
+    }.bind(this));
 };
 
 module.exports = ScriptPort;
