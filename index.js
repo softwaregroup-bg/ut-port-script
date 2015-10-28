@@ -22,7 +22,7 @@ ScriptPort.prototype.decode = function decode() {
 //loop back the converted message
 ScriptPort.prototype.exec = function() {
     var $meta = (arguments.length > 1 && arguments[arguments.length - 1]);
-    var methodName = ($meta && $meta.opcode) || 'exec';
+    var methodName = ($meta && $meta.method) || 'exec';
     var method =  this.config[methodName] || this.config.exec;
     if (method instanceof Function) {
         return when.lift(method).apply(this, Array.prototype.slice.call(arguments));
