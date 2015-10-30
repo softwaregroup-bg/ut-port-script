@@ -14,6 +14,11 @@ function ScriptPort() {
 
 util.inherits(ScriptPort, Port);
 
+ScriptPort.prototype.init = function init() {
+    Port.prototype.init.apply(this, arguments);
+    this.latency = this.counter && this.counter('average', 'lt', 'Latency');
+};
+
 // skip creating unnecessary decoding stream, as same message is looped back by exec
 ScriptPort.prototype.decode = function decode() {
     return null;
