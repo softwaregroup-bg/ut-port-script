@@ -38,12 +38,11 @@ ScriptPort.prototype.exec = function() {
 
 ScriptPort.prototype.start = function() {
     this.bus.importMethods(this.config, this.config.imports, {request: true, response: true}, this);
-    Port.prototype.start.apply(this, Array.prototype.slice.call(arguments));
-    this.pipeExec(this.exec.bind(this), this.config.concurrency);
-    this.config.imports && this.config.imports.forEach(function(moduleName) {
-        var fn = this.config[moduleName + '.start'];
-        fn && fn();
-    }.bind(this));
+    return Port.prototype.start.apply(this, Array.prototype.slice.call(arguments))
+        .then(function(result) {
+            this.pipeExec(this.exec.bind(this), this.config.concurrency);
+            return result;
+        }.bind(this));
 };
 
 module.exports = ScriptPort;
