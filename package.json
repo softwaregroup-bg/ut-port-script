@@ -1,6 +1,6 @@
 {
   "name": "ut-port-script",
-  "version": "5.2.4",
+  "version": "5.2.5",
   "dependencies": {
     "when": "~3.7.2"
   },
