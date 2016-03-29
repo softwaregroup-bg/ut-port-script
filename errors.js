@@ -1,13 +1,13 @@
-var create = require('errno').custom.createError;
+var create = require('ut-error').define;
 
-var PortScript = create('PortScript');
-var UnknownMethod = create('UnknownMethod', PortScript);
+var PortScript = create('PortScript', undefined, 'Script error');
+var UnknownMethod = create('UnknownMethod', PortScript, 'Unknown method');
 
 module.exports = {
     script: function(cause) {
-        return new PortScript('Script error', cause);
+        return new PortScript(cause);
     },
     unknownMethod: function(cause) {
-        return new UnknownMethod('Unknown method', cause);
+        return new UnknownMethod(cause);
     }
 };
