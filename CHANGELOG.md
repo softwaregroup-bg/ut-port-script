@@ -1,3 +1,13 @@
+<a name="5.3.8"></a>
+## [5.3.8](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.7...v5.3.8) (2016-04-05)
+
+
+### Features
+
+* update ut-error dependency ([94c3111](https://git.softwaregroup-bg.com/ut5/ut-port-script/commit/94c3111))
+
+
+
 <a name="5.3.7"></a>
 ## [5.3.7](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.5...v5.3.7) (2016-03-31)
 
