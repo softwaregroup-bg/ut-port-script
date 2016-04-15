@@ -6,7 +6,7 @@
     "when": "3.7.7"
   },
   "devDependencies": {
-    "ut-tools": "^5.3.1"
+    "ut-tools": "^5.3.13"
   },
   "peerDependencies": {
     "ut-bus": "~5.3.0"
@@ -30,7 +30,9 @@
     "pretest": "ut-pretest",
     "preversion": "ut-preversion",
     "test": "ut-test",
-    "version": "ut-version"
+    "version": "ut-version",
+    "jenkins": "ut-jenkins",
+    "gitlab": "ut-gitlab"
   },
   "repository": {
     "type": "git",
