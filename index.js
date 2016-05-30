@@ -28,7 +28,13 @@ ScriptPort.prototype.decode = function decode() {
 ScriptPort.prototype.exec = function() {
     var $meta = (arguments.length > 1 && arguments[arguments.length - 1]);
     var methodName = ($meta && $meta.method) || 'exec';
-    var method = this.config[methodName] || this.config.exec;
+    var method = this.config[methodName];
+
+    if (!method) {
+        methodName = methodName.split('/', 2);
+        method = (methodName.length === 2 && this.config[methodName[1]]) || this.config.exec;
+    }
+
     if (method instanceof Function) {
         return when.lift(method).apply(this, Array.prototype.slice.call(arguments));
     } else {
