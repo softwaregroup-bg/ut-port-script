@@ -1,3 +1,8 @@
+<a name="5.3.11"></a>
+## [5.3.11](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.10...v5.3.11) (2016-06-21)
+
+
+
 <a name="5.3.10"></a>
 ## [5.3.10](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.9...v5.3.10) (2016-05-30)
 
