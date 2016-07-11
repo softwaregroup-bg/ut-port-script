@@ -1,15 +1,15 @@
 {
   "name": "ut-port-script",
-  "version": "5.3.11",
+  "version": "5.4.0",
   "dependencies": {
-    "ut-error": "^5.3.10",
+    "ut-error": "^5.3.12",
     "when": "3.7.7"
   },
   "devDependencies": {
-    "ut-tools": "^5.3.13"
+    "ut-tools": "^5.4.1"
   },
   "peerDependencies": {
-    "ut-bus": "~5.3.0"
+    "ut-bus": "~5.4.2"
   },
   "publishConfig": {
     "registry": "https://nexus.softwaregroup-bg.com/repository/npm-internal"
