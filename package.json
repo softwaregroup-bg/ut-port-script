@@ -1,6 +1,6 @@
 {
   "name": "ut-port-script",
-  "version": "5.4.3",
+  "version": "5.4.4",
   "dependencies": {
     "ut-error": "^5.3.12",
     "when": "3.7.7"

@@ -1,3 +1,8 @@
+<a name="5.4.4"></a>
+## [5.4.4](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.4.3...v5.4.4) (2016-09-20)
+
+
+
 <a name="5.4.3"></a>
 ## [5.4.3](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.4.2...v5.4.3) (2016-08-12)
 
