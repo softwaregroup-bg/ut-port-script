@@ -38,7 +38,7 @@ ScriptPort.prototype.exec = function() {
     if (method instanceof Function) {
         return when.lift(method).apply(this, Array.prototype.slice.call(arguments));
     } else {
-        return when.reject(errors.script(methodName));
+        return when.reject(errors.unknownMethod($meta && $meta.method));
     }
 };
 
