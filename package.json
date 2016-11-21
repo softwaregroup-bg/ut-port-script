@@ -2,14 +2,14 @@
   "name": "ut-port-script",
   "version": "5.4.6",
   "dependencies": {
-    "ut-error": "^5.3.12",
+    "ut-error": "^5.3.16",
     "when": "3.7.7"
   },
   "devDependencies": {
-    "ut-tools": "^5.6.0"
+    "ut-tools": "^5.10.7"
   },
   "peerDependencies": {
-    "ut-bus": "~5.4.2"
+    "ut-bus": "~5.6.1"
   },
   "description": "UT port script module",
   "scripts": {
