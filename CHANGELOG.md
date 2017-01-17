@@ -1,3 +1,13 @@
+<a name="5.4.8"></a>
+## [5.4.8](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.4.7...v5.4.8) (2017-01-17)
+
+
+### Bug Fixes
+
+* update dependencies ([5f0dcb9](https://github.com/softwaregroup-bg/ut-port-script/commit/5f0dcb9))
+
+
+
 <a name="5.4.7"></a>
 ## [5.4.7](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.4.6...v5.4.7) (2016-11-21)
 
