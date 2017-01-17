@@ -6,10 +6,10 @@
     "when": "3.7.7"
   },
   "devDependencies": {
-    "ut-tools": "^5.10.7"
+    "ut-tools": "^5.11.1"
   },
   "peerDependencies": {
-    "ut-bus": "~5.6.1"
+    "ut-bus": "~5.8.1"
   },
   "description": "UT port script module",
   "scripts": {
