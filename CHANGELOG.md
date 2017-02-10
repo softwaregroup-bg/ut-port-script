@@ -1,3 +1,13 @@
+<a name="5.5.0"></a>
+# [5.5.0](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.4.8...v5.5.0) (2017-02-10)
+
+
+### Features
+
+* additional fallback logic ([99d1f08](https://github.com/softwaregroup-bg/ut-port-script/commit/99d1f08))
+
+
+
 <a name="5.4.8"></a>
 ## [5.4.8](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.4.7...v5.4.8) (2017-01-17)
 
