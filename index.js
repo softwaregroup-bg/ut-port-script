@@ -8,7 +8,8 @@ function ScriptPort() {
     this.config = {
         id: null,
         logLevel: '',
-        type: 'script'
+        type: 'script',
+        findMethod: false
     };
 }
 
@@ -24,11 +25,27 @@ ScriptPort.prototype.decode = function decode() {
     return null;
 };
 
+function findMethod(where, methodName) {
+    var result = where[methodName];
+    if (!result) {
+        var names = methodName.split('.');
+        while (names.length) {
+            result = where[names.join('.')];
+            if (result) {
+                where[methodName] = result;
+                break;
+            }
+            names.pop();
+        }
+    }
+    return result;
+}
+
 // loop back the converted message
 ScriptPort.prototype.exec = function() {
     var $meta = (arguments.length > 1 && arguments[arguments.length - 1]);
     var methodName = ($meta && $meta.method) || 'exec';
-    var method = this.config[methodName];
+    var method = this.config.findMethod ? findMethod(this.config, methodName) : this.config[methodName];
 
     if (!method) {
         methodName = methodName.split('/', 2);

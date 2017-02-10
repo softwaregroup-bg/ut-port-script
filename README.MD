@@ -8,7 +8,7 @@ UT Port Script is a destination port which is not aimed for establishing a direc
 
 Basics
 -------------
-Defining a script port for a given implementation. 
+Defining a script port for a given implementation.
 
 ------------------------------------------------------------------------------------------
 For the purpose of this example we'll create a ut-script-port named 'rpc'.  The folder structure should be as follows:
@@ -32,7 +32,7 @@ module.exports = {
 };
 ```
 
-For the purpose of this tutorial the ut-template module will also be registered in the bus along with the rpc port. That can be done again through server.js and it's content becomes: 
+For the purpose of this tutorial the ut-template module will also be registered in the bus along with the rpc port. That can be done again through server.js and it's content becomes:
 ```js
 module.exports = {
     ports: [
@@ -48,7 +48,7 @@ Now the script port and the ut-template module are bundled together inside serve
 
 ----------------------------------------------------
 
-The next step is describing the methods of the rpc port itself. In order for the script port to be initialized some basic settings are required, such as defining it's **id**, **type**, **logLevel** and **namespace**. 
+The next step is describing the methods of the rpc port itself. In order for the script port to be initialized some basic settings are required, such as defining it's **id**, **type**, **logLevel** and **namespace**.
 The minimum definition of the ut-script port (in this case: *impl-test/ports/rpc/index.js*) looks like this:
 
 ```js
@@ -111,7 +111,8 @@ module.exports = {
 };
 ```
 
-The ut-script port has the option for defining a default method called **exec** which acts as a fallback in case no method is specified for a given operation code. So in the code above the **exec** method will be called for all messages except for the ones with opcode **test** for which the respective method named test will be triggered.
+The ut-script port has the option for defining a default method called **exec** which acts as a fallback in case no method is specified for a given operation code. So in the code above the **exec** method will be called for all messages except for the ones with opcode **test** for which the respective method named test will be triggered. Another fallback logic can be activated by setting port property `findMethod = true`.
+In this case trying to execute method named `a.b.c` will first look for `a.b.c` then for `a.b` then for `a` and finally for `exec`.
 
 -----
 
