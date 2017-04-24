@@ -1,3 +1,8 @@
+<a name="5.5.2"></a>
+## [5.5.2](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.5.1...v5.5.2) (2017-04-24)
+
+
+
 <a name="5.5.1"></a>
 ## [5.5.1](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.5.0...v5.5.1) (2017-03-08)
 
