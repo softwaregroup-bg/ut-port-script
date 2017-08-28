@@ -1,3 +1,13 @@
+<a name="5.5.6"></a>
+## [5.5.6](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.5.5...v5.5.6) (2017-08-28)
+
+
+### Bug Fixes
+
+* remove init method ([#1](https://github.com/softwaregroup-bg/ut-port-script/issues/1)) ([4dd9b1a](https://github.com/softwaregroup-bg/ut-port-script/commit/4dd9b1a))
+
+
+
 <a name="5.5.5"></a>
 ## [5.5.5](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.5.4...v5.5.5) (2017-05-22)
 
