@@ -1,71 +1,64 @@
-var Port = require('ut-bus/port');
-var util = require('util');
-var when = require('when');
-var errors = require('./errors.js');
+'use strict';
+const merge = require('lodash.merge');
+const util = require('util');
+const errors = require('./errors.js');
 
-function ScriptPort() {
-    Port.call(this);
-    this.config = {
-        id: null,
-        logLevel: '',
-        type: 'script',
-        findMethod: false
-    };
-}
+module.exports = function(Parent) {
+    function ScriptPort({config}) {
+        Parent && Parent.apply(this, arguments);
+        this.config = merge({
+            id: null,
+            logLevel: 'info',
+            type: 'script',
+            findMethod: false
+        }, config);
+    }
 
-util.inherits(ScriptPort, Port);
+    if (Parent) {
+        util.inherits(ScriptPort, Parent);
+    }
 
-ScriptPort.prototype.init = function init() {
-    Port.prototype.init.apply(this, arguments);
-    this.latency = this.counter && this.counter('average', 'lt', 'Latency');
-};
-
-// skip creating unnecessary decoding stream, as same message is looped back by exec
-ScriptPort.prototype.decode = function decode() {
-    return null;
-};
-
-function findMethod(where, methodName) {
-    var result = where[methodName];
-    if (!result) {
-        var names = methodName.split('.');
-        while (names.length) {
-            result = where[names.join('.')];
-            if (result) {
-                where[methodName] = result;
-                break;
+    function findMethod(where, methodName) {
+        let result = where[methodName];
+        if (!result) {
+            let names = methodName.split('.');
+            while (names.length) {
+                result = where[names.join('.')];
+                if (result) {
+                    where[methodName] = result;
+                    break;
+                }
+                names.pop();
             }
-            names.pop();
         }
-    }
-    return result;
-}
-
-// loop back the converted message
-ScriptPort.prototype.exec = function() {
-    var $meta = (arguments.length > 1 && arguments[arguments.length - 1]);
-    var methodName = ($meta && $meta.method) || 'exec';
-    var method = this.config.findMethod ? findMethod(this.config, methodName) : this.config[methodName];
-
-    if (!method) {
-        methodName = methodName.split('/', 2);
-        method = (methodName.length === 2 && this.config[methodName[1]]) || this.config.exec;
+        return result;
     }
 
-    if (method instanceof Function) {
-        return when.lift(method).apply(this, Array.prototype.slice.call(arguments));
-    } else {
-        return when.reject(errors.unknownMethod($meta && $meta.method));
-    }
+    ScriptPort.prototype.exec = function(...params) {
+        let $meta = params && params.length > 1 && params[params.length - 1];
+        let methodName = ($meta && $meta.method) || 'exec';
+        let method = this.config.findMethod ? findMethod(this.config, methodName) : this.config[methodName];
+
+        if (!method) {
+            methodName = methodName.split('/', 2);
+            method = (methodName.length === 2 && this.config[methodName[1]]) || this.config.exec;
+        }
+
+        if (method instanceof Function) {
+            return Promise.resolve().then(() => method.apply(this, params));
+        } else {
+            return Promise.reject(errors.unknownMethod({params: {method: $meta && $meta.method}}));
+        }
+    };
+
+    ScriptPort.prototype.start = function(...params) {
+        this.bus.importMethods(this.config, this.config.imports, {request: true, response: true}, this);
+        return Parent && Parent.prototype.start.apply(this, params)
+            .then(result => {
+                this.pull(this.exec);
+                return result;
+            });
+    };
+
+    return ScriptPort;
 };
-
-ScriptPort.prototype.start = function() {
-    this.bus.importMethods(this.config, this.config.imports, {request: true, response: true}, this);
-    return Port.prototype.start.apply(this, Array.prototype.slice.call(arguments))
-        .then(function(result) {
-            this.pipeExec(this.exec.bind(this), this.config.concurrency);
-            return result;
-        }.bind(this));
-};
-
-module.exports = ScriptPort;

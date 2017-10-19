@@ -1,13 +1,8 @@
-var create = require('ut-error').define;
-
-var PortScript = create('PortScript', undefined, 'Script error');
-var UnknownMethod = create('UnknownMethod', PortScript, 'Unknown method {methodName}');
+'use strict';
+const create = require('ut-error').define;
+const PortScript = create('PortScript', undefined, 'Script error');
 
 module.exports = {
-    script: function(cause) {
-        return new PortScript(cause);
-    },
-    unknownMethod: function(methodName) {
-        return new UnknownMethod({params: {methodName}});
-    }
+    script: PortScript,
+    unknownMethod: create('UnknownMethod', PortScript, 'Unknown method "{method}"')
 };
