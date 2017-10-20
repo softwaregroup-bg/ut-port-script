@@ -3,9 +3,9 @@ const merge = require('lodash.merge');
 const util = require('util');
 const errors = require('./errors.js');
 
-module.exports = function(Parent) {
+module.exports = function({parent}) {
     function ScriptPort({config}) {
-        Parent && Parent.apply(this, arguments);
+        parent && parent.apply(this, arguments);
         this.config = merge({
             id: null,
             logLevel: 'info',
@@ -14,8 +14,8 @@ module.exports = function(Parent) {
         }, config);
     }
 
-    if (Parent) {
-        util.inherits(ScriptPort, Parent);
+    if (parent) {
+        util.inherits(ScriptPort, parent);
     }
 
     function findMethod(where, methodName) {
@@ -54,7 +54,7 @@ module.exports = function(Parent) {
     ScriptPort.prototype.start = function(...params) {
         this.bus.importMethods(this.config, this.config.imports, {request: true, response: true}, this);
         return Promise.resolve()
-            .then(() => Parent && Parent.prototype.start.apply(this, params))
+            .then(() => parent && parent.prototype.start.apply(this, params))
             .then(result => {
                 this.pull(this.exec);
                 return result;
