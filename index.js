@@ -53,7 +53,8 @@ module.exports = function(Parent) {
 
     ScriptPort.prototype.start = function(...params) {
         this.bus.importMethods(this.config, this.config.imports, {request: true, response: true}, this);
-        return Parent && Parent.prototype.start.apply(this, params)
+        return Promise.resolve()
+            .then(() => Parent && Parent.prototype.start.apply(this, params))
             .then(result => {
                 this.pull(this.exec);
                 return result;
