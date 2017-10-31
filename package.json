@@ -1,6 +1,6 @@
 {
   "name": "ut-port-script",
-  "version": "5.5.6",
+  "version": "5.6.0-rc-acapulco.0",
   "dependencies": {
     "ut-error": "^5.4.0",
     "when": "3.7.7"
