@@ -1,7 +1,7 @@
 'use strict';
 const merge = require('lodash.merge');
 const util = require('util');
-const errors = require('./errors.js');
+let errors;
 
 module.exports = function({parent}) {
     function ScriptPort({config}) {
@@ -12,6 +12,7 @@ module.exports = function({parent}) {
             type: 'script',
             findMethod: false
         }, config);
+        errors = errors || require('./errors')(this.defineError);
     }
 
     if (parent) {
