@@ -1,7 +1,6 @@
 'use strict';
 const merge = require('lodash.merge');
 const util = require('util');
-let errors;
 
 module.exports = function({parent}) {
     function ScriptPort({config}) {
@@ -12,7 +11,6 @@ module.exports = function({parent}) {
             type: 'script',
             findMethod: false
         }, config);
-        errors = errors || require('./errors')(this.defineError);
     }
 
     if (parent) {
@@ -48,7 +46,7 @@ module.exports = function({parent}) {
         if (method instanceof Function) {
             return Promise.resolve().then(() => method.apply(this, params));
         } else {
-            return Promise.reject(errors.unknownMethod({params: {method: $meta && $meta.method}}));
+            return Promise.reject(this.bus.errors.methodNotFound({params: {method: $meta && $meta.method}}));
         }
     };
 
