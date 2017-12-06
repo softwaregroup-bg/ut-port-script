@@ -1,6 +1,6 @@
 {
   "name": "ut-port-script",
-  "version": "6.0.0-ut6.5",
+  "version": "6.0.0",
   "dependencies": {
     "lodash.merge": "4.6.0"
   },

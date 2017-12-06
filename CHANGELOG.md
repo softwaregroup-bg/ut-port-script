@@ -1,3 +1,13 @@
+<a name="6.0.0"></a>
+# [6.0.0](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.5.6...v6.0.0) (2017-12-06)
+
+
+### Bug Fixes
+
+* decouple from ut-bus, no more when ([4dea2e4](https://github.com/softwaregroup-bg/ut-port-script/commit/4dea2e4))
+
+
+
 <a name="5.5.6"></a>
 ## [5.5.6](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.5.5...v5.5.6) (2017-08-28)
 
