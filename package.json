@@ -1,15 +1,11 @@
 {
   "name": "ut-port-script",
-  "version": "5.5.6",
+  "version": "6.0.0-ut6.5",
   "dependencies": {
-    "ut-error": "^5.4.0",
-    "when": "3.7.7"
+    "lodash.merge": "4.6.0"
   },
   "devDependencies": {
-    "ut-tools": "^5.13.5"
-  },
-  "peerDependencies": {
-    "ut-bus": "^5.9.0"
+    "ut-tools": "^5.23.2"
   },
   "description": "UT port script module",
   "scripts": {
