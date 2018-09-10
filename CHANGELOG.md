@@ -1,3 +1,13 @@
+<a name="6.0.1"></a>
+## [6.0.1](https://github.com/softwaregroup-bg/ut-port-script/compare/v6.0.0...v6.0.1) (2018-09-10)
+
+
+### Bug Fixes
+
+* add precover ([ef8cd43](https://github.com/softwaregroup-bg/ut-port-script/commit/ef8cd43))
+
+
+
 <a name="6.0.0"></a>
 # [6.0.0](https://github.com/softwaregroup-bg/ut-port-script/compare/v5.5.6...v6.0.0) (2017-12-06)
 
