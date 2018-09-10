@@ -55,7 +55,7 @@ module.exports = function({parent}) {
         return Promise.resolve()
             .then(() => parent && parent.prototype.start.apply(this, params))
             .then(result => {
-                this.pull(this.exec);
+                this.pull(this.exec, this.config.context);
                 return result;
             });
     };

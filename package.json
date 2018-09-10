@@ -5,7 +5,7 @@
     "lodash.merge": "4.6.0"
   },
   "devDependencies": {
-    "ut-tools": "^5.23.2"
+    "ut-tools": "^5.32.10"
   },
   "description": "UT port script module",
   "scripts": {
@@ -13,6 +13,7 @@
     "release": "ut-release",
     "changelog": "ut-changelog",
     "check": "ut-check",
+    "precover": "ut-precover",
     "cover": "ut-cover",
     "lint-js": "ut-lint-js .",
     "postpublish": "ut-postpublish",
