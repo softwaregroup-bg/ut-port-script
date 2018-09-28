@@ -46,7 +46,7 @@ module.exports = function({parent}) {
         if (method instanceof Function) {
             return Promise.resolve().then(() => method.apply(this, params));
         } else {
-            return Promise.reject(this.bus.errors.methodNotFound({params: {method: $meta && $meta.method}}));
+            return Promise.reject(this.bus.errors['bus.methodNotFound']({params: {method: $meta && $meta.method}}));
         }
     };
 
