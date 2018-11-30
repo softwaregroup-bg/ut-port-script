@@ -27,11 +27,8 @@ module.exports = function({parent, utPort = parent}) {
         async exec(...params) {
             let $meta = params && params.length > 1 && params[params.length - 1];
             let methodName = ($meta && $meta.method) || 'exec';
-            let method = this.config.findMethod ? findMethod(this.methods, methodName) : this.methods[methodName];
-            if (!method) {
-                methodName = methodName.split('/', 2);
-                method = (methodName.length === 2 && this.methods[methodName[1]]) || this.methods.exec;
-            }
+            let method = this.config.findMethod ? findMethod(this.methods, methodName) : this.findHandler(methodName);
+            method = method || this.methods.exec;
             if (method instanceof Function) {
                 return method(...params);
             } else {
@@ -39,7 +36,7 @@ module.exports = function({parent, utPort = parent}) {
             }
         }
         async start() {
-            this.bus.importMethods(this.methods, this.config.imports, { request: true, response: true }, this);
+            this.bus.attachHandlers(this.methods, this.config.imports, this);
             const result = await super.start(...arguments);
             this.pull(this.exec, this.config.context);
             return result;
