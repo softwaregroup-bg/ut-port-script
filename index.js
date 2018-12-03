@@ -30,13 +30,13 @@ module.exports = function({parent, utPort = parent}) {
             let method = this.config.findMethod ? findMethod(this.methods, methodName) : this.findHandler(methodName);
             method = method || this.methods.exec;
             if (method instanceof Function) {
-                return method(...params);
+                return method.apply(this, params);
             } else {
                 throw this.bus.errors['bus.methodNotFound']({ params: { method: $meta && $meta.method } });
             }
         }
         async start() {
-            this.bus.attachHandlers(this.methods, this.config.imports, this);
+            this.bus.attachHandlers(this.methods, this.config.imports);
             const result = await super.start(...arguments);
             this.pull(this.exec, this.config.context);
             return result;
