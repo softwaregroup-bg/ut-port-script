@@ -1,6 +1,6 @@
 {
   "name": "ut-port-script",
-  "version": "6.1.0-rc-godfather.3",
+  "version": "7.0.0",
   "devDependencies": {
     "ut-tools": "^6.8.10"
   },

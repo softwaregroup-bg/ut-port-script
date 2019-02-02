@@ -1,3 +1,21 @@
+# [7.0.0](https://github.com/softwaregroup-bg/ut-port-script/compare/v6.0.1...v7.0.0) (2019-02-02)
+
+
+### Bug Fixes
+
+* refactor as class ([#5](https://github.com/softwaregroup-bg/ut-port-script/issues/5)) ([5958e75](https://github.com/softwaregroup-bg/ut-port-script/commit/5958e75))
+* remove unused dependency ([51e8c6e](https://github.com/softwaregroup-bg/ut-port-script/commit/51e8c6e))
+* sync with error related changes ([#4](https://github.com/softwaregroup-bg/ut-port-script/issues/4)) ([2983a8e](https://github.com/softwaregroup-bg/ut-port-script/commit/2983a8e))
+* upgrade dependencies ([7b45df3](https://github.com/softwaregroup-bg/ut-port-script/commit/7b45df3))
+* upgrade ut-tools ([74437fc](https://github.com/softwaregroup-bg/ut-port-script/commit/74437fc))
+
+
+### BREAKING CHANGES
+
+* requires upgrade of ut-port and ut-run
+
+
+
 <a name="6.0.1"></a>
 ## [6.0.1](https://github.com/softwaregroup-bg/ut-port-script/compare/v6.0.0...v6.0.1) (2018-09-10)
 
