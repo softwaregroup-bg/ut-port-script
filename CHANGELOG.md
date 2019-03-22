@@ -137,67 +137,67 @@
 
 
 <a name="5.4.2"></a>
-## [5.4.2](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.4.1...v5.4.2) (2016-07-22)
+## [5.4.2](https://git.softwaregroup.com/ut5/ut-port-script/compare/v5.4.1...v5.4.2) (2016-07-22)
 
 
 
 <a name="5.4.1"></a>
-## [5.4.1](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.11...v5.4.1) (2016-07-11)
+## [5.4.1](https://git.softwaregroup.com/ut5/ut-port-script/compare/v5.3.11...v5.4.1) (2016-07-11)
 
 
 ### Features
 
-* upgrade dependencies ([3c749f1](https://git.softwaregroup-bg.com/ut5/ut-port-script/commit/3c749f1))
+* upgrade dependencies ([3c749f1](https://git.softwaregroup.com/ut5/ut-port-script/commit/3c749f1))
 
 
 
 <a name="5.3.11"></a>
-## [5.3.11](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.10...v5.3.11) (2016-06-21)
+## [5.3.11](https://git.softwaregroup.com/ut5/ut-port-script/compare/v5.3.10...v5.3.11) (2016-06-21)
 
 
 
 <a name="5.3.10"></a>
-## [5.3.10](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.9...v5.3.10) (2016-05-30)
+## [5.3.10](https://git.softwaregroup.com/ut5/ut-port-script/compare/v5.3.9...v5.3.10) (2016-05-30)
 
 
 ### Features
 
-* add support for endpoint/method syntax ([860158f](https://git.softwaregroup-bg.com/ut5/ut-port-script/commit/860158f))
+* add support for endpoint/method syntax ([860158f](https://git.softwaregroup.com/ut5/ut-port-script/commit/860158f))
 
 
 
 <a name="5.3.9"></a>
-## [5.3.9](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.8...v5.3.9) (2016-04-15)
+## [5.3.9](https://git.softwaregroup.com/ut5/ut-port-script/compare/v5.3.8...v5.3.9) (2016-04-15)
 
 
 ### Features
 
-* add Gitlab-ci and Jenkins scripts ([587c87d](https://git.softwaregroup-bg.com/ut5/ut-port-script/commit/587c87d))
+* add Gitlab-ci and Jenkins scripts ([587c87d](https://git.softwaregroup.com/ut5/ut-port-script/commit/587c87d))
 
 
 
 <a name="5.3.8"></a>
-## [5.3.8](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.7...v5.3.8) (2016-04-05)
+## [5.3.8](https://git.softwaregroup.com/ut5/ut-port-script/compare/v5.3.7...v5.3.8) (2016-04-05)
 
 
 ### Features
 
-* update ut-error dependency ([94c3111](https://git.softwaregroup-bg.com/ut5/ut-port-script/commit/94c3111))
+* update ut-error dependency ([94c3111](https://git.softwaregroup.com/ut5/ut-port-script/commit/94c3111))
 
 
 
 <a name="5.3.7"></a>
-## [5.3.7](https://git.softwaregroup-bg.com/ut5/ut-port-script/compare/v5.3.5...v5.3.7) (2016-03-31)
+## [5.3.7](https://git.softwaregroup.com/ut5/ut-port-script/compare/v5.3.5...v5.3.7) (2016-03-31)
 
 
 ### Bug Fixes
 
-* switch to nexus ([891fa34](https://git.softwaregroup-bg.com/ut5/ut-port-script/commit/891fa34))
-* use constant dependencies ([f109d4a](https://git.softwaregroup-bg.com/ut5/ut-port-script/commit/f109d4a))
+* switch to nexus ([891fa34](https://git.softwaregroup.com/ut5/ut-port-script/commit/891fa34))
+* use constant dependencies ([f109d4a](https://git.softwaregroup.com/ut5/ut-port-script/commit/f109d4a))
 
 ### Features
 
-* ut-tools upgrade ([101a9d9](https://git.softwaregroup-bg.com/ut5/ut-port-script/commit/101a9d9))
+* ut-tools upgrade ([101a9d9](https://git.softwaregroup.com/ut5/ut-port-script/commit/101a9d9))
 
 
 
