@@ -1,3 +1,12 @@
+# [7.1.0](https://github.com/softwaregroup-bg/ut-port-script/compare/v7.0.2...v7.1.0) (2020-03-02)
+
+
+### Features
+
+* attach validations ([1e1fbe9](https://github.com/softwaregroup-bg/ut-port-script/commit/1e1fbe917db4c5bd359122c8c5581731c23939d6))
+
+
+
 ## [7.0.2](https://github.com/softwaregroup-bg/ut-port-script/compare/v7.0.1...v7.0.2) (2020-01-17)
 
 
