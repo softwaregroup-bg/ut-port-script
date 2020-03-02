@@ -3,7 +3,7 @@
 function findMethod(where, methodName) {
     let result = where[methodName];
     if (!result) {
-        let names = methodName.split('.');
+        const names = methodName.split('.');
         while (names.length) {
             result = where[names.join('.')];
             if (result) {
@@ -24,9 +24,10 @@ module.exports = function({parent, utPort = parent}) {
                 findMethod: false
             };
         }
+
         async exec(...params) {
-            let $meta = params && params.length > 1 && params[params.length - 1];
-            let methodName = ($meta && $meta.method) || 'exec';
+            const $meta = params && params.length > 1 && params[params.length - 1];
+            const methodName = ($meta && $meta.method) || 'exec';
             let method = this.config.findMethod ? findMethod(this.methods, methodName) : this.findHandler(methodName);
             method = method || this.methods.exec;
             if (method instanceof Function) {
@@ -35,8 +36,10 @@ module.exports = function({parent, utPort = parent}) {
                 throw this.bus.errors['bus.methodNotFound']({ params: { method: $meta && $meta.method } });
             }
         }
+
         async start() {
             this.bus.attachHandlers(this.methods, this.config.imports);
+            if (this.methodValidations) this.bus.attachHandlers(this.methodValidations, this.config.validations);
             const result = await super.start(...arguments);
             this.pull(this.exec, this.config.context);
             return result;
