@@ -15,17 +15,14 @@ are often implemented.
 Use `ut-function.dispatch` to easily create a script port:
 
 ```js
-module.exports = function({
+module.exports = function eip({
     import: {
         // list of external message handlers
     }
 }) {
     return require('ut-function.dispatch')({
-        namespace: 'channel1', // name of the channel
-        methods: { // define message handlers here
-            async 'channel1.a.b'() {}
-            async 'channel1.c.d'() {}
-        }
+        async 'subject.object.predicate1'() {},
+        async 'subject.object.predicate2'() {}
     })(...arguments);
 };
 ```
@@ -49,7 +46,7 @@ can modify the metadata object as per the needs.
 ![pipe](./img/pipe.gif)
 
 Message processing can be split over several ports.
-Each port can send a message to next one
+Each port can send a message to the next one
 by calling a message handler. The message handlers of
 the other ports can be accessed by by destructuring
 the `import` property.
@@ -58,22 +55,17 @@ Send messages to other channels / ports by calling
 imported handlers, which are async functions:
 
 ```js
-module.exports = function({
+module.exports = function pipes({
     import: {
-        'subject.object.predicate': method1,
+        'subject.object.predicate': handler,
         subjectObjectPredicate // same method as above
     }
 }) {
-    const handlers = {
-        async 'channel1.message.send'(...params) {
-            await method1(...params);
+    return require('ut-function.dispatch')({
+        async 'channel.message.send'(...params) {
+            await handler(...params);
             await subjectObjectPredicate(...params); // same as above
         }
-    };
-
-    return require('ut-function.dispatch')({
-        namespace: 'channel1',
-        methods: handlers
     })(...arguments);
 };
 ```
@@ -136,30 +128,24 @@ module.exports = function({
 
 ![request reply](./img/request-reply.gif)
 
-The result of the message handlers is returned to the
-calling port.
+The result of the message handlers is returned to the calling port.
 
 ```js
-module.exports = function() {
-    const handlers = {
-        async 'subject.object.predicate'(...params) {
+module.exports = function requestReply() {
+    return require('ut-function.dispatch')({
+        async 'channel.message.return'(...params) {
             return {result: true}; // returned in the calling port
         }
-    };
-
-    return require('ut-function.dispatch')({
-        namespace: 'subject',
-        methods: handlers
     })(...arguments);
-}
+};
 ```
 
 ### [Return address](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ReturnAddress.html)
 
 ![return address](./img/return-address.gif)
 
-UT implements the request reply pattern, where
-the return address is the calling port by default.
+UT implements the request reply pattern, where the return address is the
+calling port by default.
 
 ### [Correlation Identifier](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CorrelationIdentifier.html)
 
@@ -180,22 +166,20 @@ the return address is the calling port by default.
 ![router](./img/router.gif)
 
 ```js
-module.exports = function({
+module.exports = function contentRouter({
     import: {
-        subjectObjectPredicate1,
-        subjectObjectPredicate2
+        subjectObjectPredicateA,
+        subjectObjectPredicateB
     }
 }) {
-    const handlers = {
-        'channel1.message.route'({destination}) {
+    return require('ut-function.dispatch')({
+        'channel.message.route'({destination}) {
             return {
-                case1: subjectObjectPredicate1,
-                case2: subjectObjectPredicate2
+                case1: subjectObjectPredicateA,
+                case2: subjectObjectPredicateB
             }[destination](...arguments);
         }
-    };
-
-    // return script port exposing the handlers
+    })(...arguments);
 };
 ```
 
@@ -204,14 +188,12 @@ module.exports = function({
 ![dynamic-router](./img/dynamic-router.gif)
 
 ```js
-module.exports = function({import: external}) {
-    const handlers = {
-        'channel1.message.dynamicRoute'({destination}) {
+module.exports = function dynamicRouter({import: external}) {
+    return require('ut-function.dispatch')({
+        'channel.message.dynamicRoute'({destination}) {
             return external[destination](...arguments);
         }
-    };
-
-    // return script port exposing the handlers
+    })(...arguments);
 };
 ```
 
@@ -220,10 +202,12 @@ module.exports = function({import: external}) {
 ![filter](./img/filter.gif)
 
 ```js
-const handlers = {
-    'channel1.message.filter'({condition}) {
-        return condition && subjectObjectPredicate(...arguments)
-    }
+module.exports = function filter({import: {subjectObjectPredicate}}) {
+    return require('ut-function.dispatch')({
+        'channel.message.filter'({condition}) {
+            return condition && subjectObjectPredicate(...arguments);
+        }
+    })(...arguments);
 };
 ```
 
@@ -232,18 +216,22 @@ const handlers = {
 ![recipient list](./img/recipient-list.gif)
 
 ```js
-module.exports = function({import: external}) {
-    const recipients = [
-        'subjectObjectPredicate1',
-        'subjectObjectPredicate2'
-    ];
-    const handlers = {
-        'channel1.message.sendParallel'() {
+module.exports = function recipientList({
+    import: external,
+    config: {
+        recipients = [
+            'subjectObjectPredicateA',
+            'subjectObjectPredicateB'
+        ]
+    }
+}) {
+    return require('ut-function.dispatch')({
+        'channel.message.sendParallel'() {
             return Promise.all(recipients.map(
                 recipient => external[recipient](...arguments)
             ));
         },
-        async 'channel1.message.sendSequential'() {
+        async 'channel.message.sendSequential'() {
             const result = [];
             for (const recipient of recipients) {
                 result.push(
@@ -251,10 +239,8 @@ module.exports = function({import: external}) {
                 );
             }
             return result;
-        },
-    };
-
-    // return script port exposing the handlers
+        }
+    })(...arguments);
 };
 ```
 
@@ -263,20 +249,22 @@ module.exports = function({import: external}) {
 ![split](./img/split.gif)
 
 ```js
-const handlers = {
-    'channel1.message.splitParallel': ({items}, ...rest) =>
-        Promise.all(items.map(
-            item => subjectObjectPredicate(item, ...rest)
-        )),
-    async 'channel1.message.splitSequential'({items}, ...rest) {
-        const result = [];
-        for (const item of items) {
-            result.push(
-                await subjectObjectPredicate(item, ...rest)
-            );
+module.exports = function splitter({import: {subjectObjectPredicate}}) {
+    return require('ut-function.dispatch')({
+        'channel.message.splitParallel': ({items}, ...rest) =>
+            Promise.all(items.map(
+                item => subjectObjectPredicate(item, ...rest)
+            )),
+        async 'channel.message.splitSequential'({items}, ...rest) {
+            const result = [];
+            for (const item of items) {
+                result.push(
+                    await subjectObjectPredicate(item, ...rest)
+                );
+            }
+            return result;
         }
-        return result;
-    }
+    })(...arguments);
 };
 ```
 
@@ -285,18 +273,25 @@ const handlers = {
 ![aggregate](./img/aggregate.gif)
 
 ```js
-const batchStrategy = (size, list = []) => ({
-    aggregate: message => list.push(message) || list,
-    complete: () => (list.size >= size) && list.splice(0, list.size)
-});
-
-const handlers = (strategy => ({
-    'channel1.message.aggregate'(message, ...rest) {
-        strategy.aggregate(message);
-        const aggregate = strategy.complete();
-        return aggregate && subjectObjectPredicate(aggregate, ...rest);
+module.exports = function aggregator({
+    import: {subjectObjectPredicate},
+    config: {
+        size = 10,
+        list = [],
+        strategy = {
+            aggregate: message => list.push(message),
+            complete: () => (list.size >= size) && list.splice(0, list.size)
+        }
     }
-}))(batchStrategy(10));
+}) {
+    return require('ut-function.dispatch')({
+        'channel.message.aggregate'(message, ...rest) {
+            strategy.aggregate(message);
+            const aggregate = strategy.complete();
+            return aggregate && subjectObjectPredicate(aggregate, ...rest);
+        }
+    })(...arguments);
+};
 ```
 
 ### [Resequencer](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Resequencer.html)
@@ -304,25 +299,33 @@ const handlers = (strategy => ({
 ![re-sequence](./img/re-sequence.gif)
 
 ```js
-const reSequence = (size, comparator, list = []) => ({
-    aggregate: message => list.push(message) || list,
-    complete: () => (list.size >= size) &&
-        list
-            .splice(0, list.size)
-            .sort(comparator || ((first, second) => first[0].order - second[0].order))
-});
-
-const handlers = (strategy => ({
-    async 'channel1.message.reSequence'(...params) {
-        strategy.aggregate(...params);
-        const aggregate = strategy.complete() || [];
-        const result = [];
-        for (const item of aggregate) {
-            result.push(await subjectObjectPredicate(...item));
+module.exports = function resequencer({
+    import: {subjectObjectPredicate},
+    config: {
+        size = 10,
+        comparator = (first, second) => first[0].order - second[0].order,
+        list = [],
+        strategy = {
+            aggregate: message => list.push(message),
+            complete: () => (list.size >= size) &&
+                list
+                    .splice(0, list.size)
+                    .sort(comparator)
         }
-        return result;
     }
-}))(reSequence(10));
+}) {
+    return require('ut-function.dispatch')({
+        async 'channel.message.sort'(...params) {
+            strategy.aggregate(...params);
+            const aggregate = strategy.complete() || [];
+            const result = [];
+            for (const item of aggregate) {
+                result.push(await subjectObjectPredicate(...item));
+            }
+            return result;
+        }
+    })(...arguments);
+};
 ```
 
 ### [Composer](https://www.enterpriseintegrationpatterns.com/patterns/messaging/DistributionAggregate.html)
@@ -330,11 +333,18 @@ const handlers = (strategy => ({
 ![compose](./img/compose.gif)
 
 ```js
-const handlers = {
-    'channel1.message.compose': async({part1, part2}, ...rest) => ({
-        ...await subjectObjectPredicate1(part1, ...rest),
-        ...await subjectObjectPredicate2(part2, ...rest)
-    })
+module.exports = function composer({
+    import: {
+        subjectObjectPredicateA,
+        subjectObjectPredicateB
+    }
+}) {
+    return require('ut-function.dispatch')({
+        'channel.message.compose': async({part1, part2}, ...rest) => ({
+            ...await subjectObjectPredicateA(part1, ...rest),
+            ...await subjectObjectPredicateB(part2, ...rest)
+        })
+    })(...arguments);
 };
 ```
 
@@ -343,19 +353,18 @@ const handlers = {
 ![scatter](./img/scatter.gif)
 
 ```js
-module.exports = function({import: external}) {
-    const handlers = {
-        async 'channel1.message.scatter'({destinations, ...params}, ...rest) {
+module.exports = function scatterGatherer({import: external}) {
+    return require('ut-function.dispatch')({
+        async 'channel.message.scatter'({destinations, ...params}, ...rest) {
             const result = [];
             for (const destination of destinations) {
                 result.push(
                     await external[destination](params, ...rest)
                 );
             }
+            return result;
         }
-    };
-
-    // return script port exposing the handlers
+    })(...arguments);
 };
 ```
 
@@ -397,15 +406,16 @@ module.exports = function({import: external}) {
 
 ```js
 const crypto = require('crypto');
-const handlers = {
-    'channel1.message.wrap': async () =>
-        Buffer.from(
-            await subjectObjectPredicate({
-                payload: crypto.randomBytes(100).toString('base64')
-            }),
-            'base64'
-        )
-    }
+module.exports = function envelopeWrapper({import: {subjectObjectPredicate}}) {
+    return require('ut-function.dispatch')({
+        'channel.message.wrap': async() =>
+            Buffer.from(
+                await subjectObjectPredicate({
+                    payload: crypto.randomBytes(100).toString('base64')
+                }),
+                'base64'
+            )
+    })(...arguments);
 };
 ```
 
@@ -414,21 +424,26 @@ const handlers = {
 ![enricher](./img/enricher.gif)
 
 ```js
-module.exports = function({import: {subjectObjectPredicate}}) {
+module.exports = function contentEnricher({
+    import: {
+        subjectObjectPredicateA,
+        subjectObjectPredicateB
+    }
+}) {
     let enrich; // cache the enrichment data
     return require('ut-function.dispatch')({
-        namespace: 'channel1',
+        namespace: 'channel',
         methods: {
             async start() {
-                enrich = await subjectObjectPredicate();
+                enrich = await subjectObjectPredicateA();
             },
-            'channel1.message.enrich': async(params, ...rest) =>
-                subjectObjectPredicate1(
+            'channel.message.enrich': async(params, ...rest) =>
+                subjectObjectPredicateB(
                     {params, ...enrich},
                     ...rest
                 ),
-            'channel1.message.enrichConfig'(params, ...rest) {
-                return subjectObjectPredicate1(
+            'channel.message.enrichConfig'(params, ...rest) {
+                return subjectObjectPredicateB(
                     {params, ...this.config.enrich},
                     ...rest
                 );
@@ -443,9 +458,11 @@ module.exports = function({import: {subjectObjectPredicate}}) {
 ![content-filter](./img/content-filter.gif)
 
 ```js
-const handlers = {
-    'channel1.message.simplify': ({skip, ...simple}, ...rest) =>
-        subjectObjectPredicate1(simple, ...rest)
+module.exports = function contentFilter({import: {subjectObjectPredicate}}) {
+    return require('ut-function.dispatch')({
+        'channel.message.simplify': ({skip, ...simple}, ...rest) =>
+            subjectObjectPredicate(simple, ...rest)
+    })(...arguments);
 };
 ```
 
@@ -454,11 +471,18 @@ const handlers = {
 ![claim](./img/claim.gif)
 
 ```js
-const handlers = {
-    async 'channel1.message.simplify'(params, ...rest) {
-        const {id} = await subjectObjectPredicate1(...arguments)
-        return subjectObjectPredicate1({id}, ...rest);
+module.exports = function claimCheck({
+    import: {
+        subjectObjectPredicateA,
+        subjectObjectPredicateB
     }
+}) {
+    return require('ut-function.dispatch')({
+        async 'channel.message.claim'(params, ...rest) {
+            const {id} = await subjectObjectPredicateA(...arguments);
+            return subjectObjectPredicateB({id}, ...rest);
+        }
+    })(...arguments);
 };
 ```
 
@@ -467,29 +491,34 @@ const handlers = {
 ![normalizer](./img/normalizer.gif)
 
 ```js
-const detectFormat = params => params.format || 'default';
-const formats = {
-    format1: params => ({payload: params}),
-    format2: params => ({payload: params.body}),
-    default: params => params
-};
-
-const handlers = {
-    'channel1.message.simplify': (params, ...rest) =>
-        subjectObjectPredicate(
-            formats[detectFormat(params)](params),
-            ...rest
-        )
+module.exports = function normalizer({
+    import: {subjectObjectPredicate},
+    config: {
+        detect = params => params.format,
+        formats = {
+            buffer: value => value.toString('base64'),
+            date: value => value.toISOString(),
+            default: value => value.toString()
+        }
+    }
+}) {
+    return require('ut-function.dispatch')({
+        'channel.message.normalize': (params, ...rest) =>
+            subjectObjectPredicate(
+                (formats[detect(params)] || formats.default)(params),
+                ...rest
+            )
+    })(...arguments);
 };
 ```
 
 ### [Canonical data model](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html)
 
 ```js
-const joi = require ('joi');
+const joi = require('joi');
 module.exports = function validation() {
     return {
-        'channel1.message.filter': () => {
+        'channel.message.filter': () => ({
             description: 'Message filter EIP',
             params: joi.object().keys({
                 condition: joi
@@ -499,9 +528,9 @@ module.exports = function validation() {
             }),
             result: joi.object()
 
-        }
-    }
-}
+        })
+    };
+};
 ```
 
 ## [Messaging endpoints](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessagingEndpointsIntro.html)
