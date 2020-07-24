@@ -41,6 +41,30 @@ always the metadata.
 Handlers usually return a result and in some cases they
 can modify the metadata object as per the needs.
 
+Message metadata includes these properties:
+
+- `mtid`- message type identifier, which can be one of:
+  - `request` - for messages, which wait for a reply to be returned
+  - `notification` - for messages, which do not wait for a reply
+  - `response` - for messages, returned after successful execution of request
+  - `error` - for messages, returned after unsuccessful execution of request
+- `method`- identifies the name of the handler, which should process the message.
+  The recommended way of naming the methods is in the form `subject.object.predicate`,
+  which usually represent the following:
+  - `subject` - identifies the module (i.e. channel/port), which handles the message.
+  It is also used for name-spacing the API, splitting the application
+  in microservices, etc.
+  - `object` - identifies the entity, affected by the message
+  - `predicate` - identifies the action applied on the `object`
+
+  Similar approach is used in other places, where this is also named
+  [semantic triple](https://en.wikipedia.org/wiki/Semantic_triple).
+- `opcode` - has the same value as predicate, and has direct relationship
+  with certain low level protocols, where messages have simple
+- `trace` - unique identifier of the message within the context of
+  the transmission protocol. This identifier is used to match replies
+  (i.e. responses and errors) to their requests.
+
 ### [Pipes and Filters](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters.html)
 
 ![pipe](./img/pipe.gif)
@@ -74,11 +98,42 @@ module.exports = function pipes({
 
 ![router](./img/router.gif)
 
+The default routing mechanism for messages is based on the
+`subject` part of the method name. The framework utilizes `ut-bus`
+to find the microservice containing the port, which can handle the message.
+When the message cannot be handled within the current process, a
+process known as service discovery is used. It usually involves
+some logic on top of DNS.
+
 ### [Message Translator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageTranslator.html)
+
+Translation of internal messages usually happens in the script
+port, by writing JavaScript code. See examples in the section
+[message transformation](#message-transformation) below.
+
+Translation of messages to formats recognized by external systems
+happens in what is known as `port` within UT framework. Here are
+some examples of the most used ports within the framework:
+
+- `ut-port-tcp` - for handling low level streams of network packets.
+  It utilizes helper modules named `ut-codec-*` which convert messages
+  between buffer and object representations.
+- `ut-port-sql` - for interfacing to Microsoft SQL Server
+- `ut-port-http` - for requesting HTTP servers using various HTTP based
+  protocols
+
+So the main difference is that `ut-port-script` is used for processing
+of internal messages between other UT ports, while the rest of the ports
+communicate with external systems.
 
 ![translator](./img/translator.gif)
 
 ### [Message Endpoint](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageEndpoint.html)
+
+Message endpoints are managed by `ut-bus`, which can be configured to
+use different communication technologies. Each port creates
+endpoint within `ut-bus` and depending on communication technology,
+this can be represented in various ways, for example HTTP URL.
 
 ![endpoint](./img/endpoint.gif)
 
@@ -88,23 +143,52 @@ module.exports = function pipes({
 
 ![point to pont](./img/point-to-point.gif)
 
+This is the default and most used mode, as it does not require
+any additional configuration and is the easiest to use. Most of the ports
+within UT framework work in point to point mode by just calling
+their handlers, prefixed with the namespace of the port.
+
 ### [Publish-Subscribe Channel](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html)
+
+Publish-subscribe is not frequently used, as it requires persisting
+of messages and usage of third party message queue software for message broker.
+There are per demand efforts to support this in both the bus and
+in specialized ports, but is not yet fully implemented. The potentially supported
+message queues are IBM MQ, Rabbit MQ and Apache Kafka.
 
 ### [Datatype Channel](https://www.enterpriseintegrationpatterns.com/patterns/messaging/DatatypeChannel.html)
 
+UT does not have any specific concept or recommendation for this pattern.
+
 ### [Invalid Message Channel](https://www.enterpriseintegrationpatterns.com/patterns/messaging/InvalidMessageChannel.html)
+
+Currently this is not supported. Error logs are the place to check for invalid
+messages, it the port implemented error logging of invalid messages.
 
 ### [Dead Letter Channel](https://www.enterpriseintegrationpatterns.com/patterns/messaging/DeadLetterChannel.html)
 
 ![dead](./img/dead.gif)
 
+This is usually implemented in a message queue software, so it is not in
+the scope of UT framework.
+
 ### [Guaranteed Delivery](https://www.enterpriseintegrationpatterns.com/patterns/messaging/GuaranteedMessaging.html)
 
 ![guaranteed](./img/guaranteed.gif)
 
+Transparent persistence is usually implemented in a message queue software,
+so it is not in the scope of UT framework. For explicit persistence,
+ports like `ut-port-sql` or `ut-port-file` can be used.
+
 ### [Channel Adapter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ChannelAdapter.html)
 
 ![adapter](./img/adapter.gif)
+
+Channel adapter within the UT framework is `ut-bus`. Ports use the bus API to
+send and receive messages. The most used API method is `importMethod`, which
+is used to send message to other ports. It is often conveniently provided in
+the `import` property of the first argument of the function, which defines
+the port, as shown in the section [Message Channel](#message-channel)
 
 ### [Messaging Bridge](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessagingBridge.html)
 
@@ -113,6 +197,12 @@ module.exports = function pipes({
 ### [Message Bus](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBus.html)
 
 ![bus](./img/bus.gif)
+
+UT framework components implement the idea of the message bus and at the same time
+often there is no physical bus as such, `ut-bus` is closer to the concept of channel
+adapter. In some circumstances `ut-bus` can be configured to create a network or
+local socket, which is technically similar to the bus concept, but this is not often
+used as it involves introducing a central message broker component.
 
 ## [Message Construction](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageConstructionIntro.html)
 
@@ -150,6 +240,11 @@ calling port by default.
 ### [Correlation Identifier](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CorrelationIdentifier.html)
 
 ![correlation](./img/correlation.gif)
+
+The framework uses the metadata property named `trace` to correlate messages in
+point to point cases. Other data, related to distributed tracing can be present
+in the `forward` property in the metadata. Code should always pass the metadata,
+when calling other ports so that distributed tracing can work.
 
 ### [Message Sequence](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageSequence.html)
 
@@ -527,7 +622,6 @@ module.exports = function validation() {
                     .description('Filtering condition')
             }),
             result: joi.object()
-
         })
     };
 };
