@@ -1,3 +1,12 @@
+# [7.2.0](https://github.com/softwaregroup-bg/ut-port-script/compare/v7.1.1...v7.2.0) (2021-03-10)
+
+
+### Features
+
+* allow namespaces to be imported ([196c537](https://github.com/softwaregroup-bg/ut-port-script/commit/196c53729917d9522502f39b2b101a635d8c860f))
+
+
+
 ## [7.1.1](https://github.com/softwaregroup-bg/ut-port-script/compare/v7.1.0...v7.1.1) (2020-07-27)
 
 
