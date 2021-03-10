@@ -39,6 +39,7 @@ module.exports = function({parent, utPort = parent}) {
 
         async start() {
             this.bus.attachHandlers(this.methods, this.config.imports);
+            if (this.importNamespaces) this.importNamespaces();
             if (this.methodValidations) this.bus.attachHandlers(this.methodValidations, this.config.validations);
             const result = await super.start(...arguments);
             this.pull(this.exec, this.config.context);
