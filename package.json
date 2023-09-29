@@ -2,8 +2,7 @@
   "name": "ut-port-script",
   "version": "7.2.0",
   "devDependencies": {
-    "tap": "^12.6.0",
-    "ut-tools": "^6.30.5"
+    "tap": "^16.2.0"
   },
   "description": "UT port script module",
   "scripts": {
