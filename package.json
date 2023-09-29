@@ -1,6 +1,6 @@
 {
   "name": "ut-port-script",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "devDependencies": {
     "tap": "^16.2.0"
   },
